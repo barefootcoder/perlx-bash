@@ -3,6 +3,8 @@ Revision history for perlx-bash
 {{$NEXT}}
 
     [Distro Fixes]
+    * Force locale to 'C' when unit testing error messages.
+      github #2 (thx Andreas Koenig (ANDK))
     * Skip most unit tests when there's no `bash` present.
       (This should solve CPAN Testers failures on MSWin systems.)
 

@@ -17,6 +17,9 @@ sub throws_error ($$$)
 	local $Test::Builder::Level = $Test::Builder::Level + 1;
 	my ($cmd, $expected, $test_tag) = @_;
 
+	# make sure our errors come back in English, as that's what our $expected will be
+	local $ENV{LC_ALL} = 'C';
+
 	my $result;
 	my ($out, $err) = capture
 	{
