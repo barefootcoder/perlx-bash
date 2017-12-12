@@ -2,6 +2,8 @@ Revision history for perlx-bash
 
 {{$NEXT}}
 
+0.02      2017-12-12 03:03:15-08:00 America/Los_Angeles
+
     [Distro Fixes]
     * Force locale to 'C' when unit testing error messages.
       github #2 (thx Andreas Koenig (ANDK))
