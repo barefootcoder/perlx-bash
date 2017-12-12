@@ -2,6 +2,13 @@ use Test::Most 0.25;
 
 use PerlX::bash;
 
+# local test modules
+use File::Spec;
+use Cwd 'abs_path';
+use File::Basename;
+use lib File::Spec->catdir(dirname(abs_path($0)), 'lib');
+use SkipUnlessBash;
+
 
 my $proglet = 'print "A 1\nB  2\n\nC 3\n"';
 

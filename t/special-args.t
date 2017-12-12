@@ -7,6 +7,7 @@ use File::Spec;
 use Cwd 'abs_path';
 use File::Basename;
 use lib File::Spec->catdir(dirname(abs_path($0)), 'lib');
+use SkipUnlessBash;
 use TestUtilFuncs qw< throws_error >;
 
 

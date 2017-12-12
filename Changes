@@ -2,6 +2,10 @@ Revision history for perlx-bash
 
 {{$NEXT}}
 
+    [Distro Fixes]
+    * Skip most unit tests when there's no `bash` present.
+      (This should solve CPAN Testers failures on MSWin systems.)
+
 0.01      2017-12-03 05:12:40-08:00 America/Los_Angeles
 
     * initial version

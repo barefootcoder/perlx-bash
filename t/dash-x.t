@@ -3,6 +3,13 @@ use Test::Output;
 
 use PerlX::bash;
 
+# local test modules
+use File::Spec;
+use Cwd 'abs_path';
+use File::Basename;
+use lib File::Spec->catdir(dirname(abs_path($0)), 'lib');
+use SkipUnlessBash;
+
 
 stderr_is { bash -x => "$^X -e 'exit 0'" } "+ $^X -e 'exit 0'\n", 'basic bash -x works';
 
