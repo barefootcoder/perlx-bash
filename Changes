@@ -5,3 +5,9 @@ Revision history for perlx-bash
 0.01      2017-12-03 05:12:40-08:00 America/Los_Angeles
 
     * initial version
+    * Basic features implemented:
+      * Spawns proper `bash` (not just calling `system`)
+      * Basic context-dependent return value (bool, int)
+      * Handles basic switches (-e, -x)
+      * Basic capture modes (string, words, lines)
+      * Autoquotes filename objects
