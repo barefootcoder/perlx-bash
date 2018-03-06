@@ -5,7 +5,7 @@ use warnings;
 
 use Exporter 'import';
 our @EXPORT = ('bash');
-our @EXPORT_OK = (@EXPORT, 'pwd');
+our @EXPORT_OK = (@EXPORT, qw< pwd head tail >);
 our %EXPORT_TAGS = ( all => \@EXPORT_OK );
 
 # VERSION
@@ -98,6 +98,24 @@ sub bash
 
 use Cwd ();
 *pwd = \&Cwd::cwd;
+
+
+sub head
+{
+	my $num = shift;
+	$num = @_ + $num if $num < 0;
+#warn("# num is $num");
+	@_[0..$num-1];
+}
+
+sub tail
+{
+	my $num = shift;
+	return () unless $num;
+	$num = $num < 0 ? @_ + $num : $num - 1 ;
+#warn("# num is $num");
+	@_[$num..$#_];
+}
 
 
 1;
