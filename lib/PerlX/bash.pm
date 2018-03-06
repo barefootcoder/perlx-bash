@@ -30,7 +30,7 @@ sub _process_bash_arg ()
 }
 
 
-sub bash
+sub bash (@)
 {
 	my (@opts, $capture);
 	my $exit_codes = [0..125];
