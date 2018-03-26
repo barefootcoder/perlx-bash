@@ -11,6 +11,7 @@ our %EXPORT_TAGS = ( all => \@EXPORT_OK );
 # VERSION
 
 
+use Carp;
 use Contextual::Return;
 use Scalar::Util qw< blessed >;
 use IPC::System::Simple qw< run capture EXIT_ANY $EXITVAL >;
@@ -20,6 +21,7 @@ sub _process_bash_arg ()
 {
 	# incoming arg is in $_
 	my $arg = $_;				# make a copy
+	croak("Use of uninitialized argument to bash") unless defined $arg;
 	if (blessed $arg and $arg->can('basename'))
 	{
 		$arg = "$arg";			# stringify
@@ -35,7 +37,7 @@ sub bash (@)
 	my (@opts, $capture);
 	my $exit_codes = [0..125];
 
-	while ( $_[0] =~ /^-/ or ref $_[0] )
+	while ( $_[0] and ($_[0] =~ /^-/ or ref $_[0]) )
 	{
 		my $arg = shift;
 		if (ref $arg)
@@ -52,6 +54,7 @@ sub bash (@)
 			push @opts, $arg;
 		}
 	}
+	croak("Not enough arguments for bash") unless @_;
 
 	my @cmd = 'bash';
 	push @cmd, @opts;
