@@ -22,7 +22,7 @@ sub _process_bash_arg ()
 	# incoming arg is in $_
 	my $arg = $_;				# make a copy
 	croak("Use of uninitialized argument to bash") unless defined $arg;
-	if (blessed $arg and $arg->can('basename'))
+	if (ref $arg eq 'Regexp' or blessed $arg and $arg->can('basename'))
 	{
 		$arg = "$arg";			# stringify
 		$arg =~ s/'/'\\''/g;	# handle internal single quotes
