@@ -68,7 +68,7 @@ sub bash (@)
 		my $IFS = $ENV{IFS};
 		$IFS = " \t\n" unless defined $IFS;
 
-		my $output = capture [0..125], qw< bash -c >, $bash_cmd;
+		my $output = capture $exit_codes, qw< bash -c >, $bash_cmd;
 		if ($capture eq 'string')
 		{
 			return $output;

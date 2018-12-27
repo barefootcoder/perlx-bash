@@ -2,6 +2,9 @@ Revision history for perlx-bash
 
 {{$NEXT}}
 
+    [Bug Fixes]
+    * Combining capture and `-e` now works as expected.
+
 0.03_01   2018-08-23 17:21:31-07:00 America/Los_Angeles (TRIAL RELEASE)
 
     [New Features]
