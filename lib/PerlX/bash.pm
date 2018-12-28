@@ -13,16 +13,31 @@ our %EXPORT_TAGS = ( all => \@EXPORT_OK );
 
 use Carp;
 use Contextual::Return;
+use List::Util qw< any >;
 use Scalar::Util qw< blessed >;
 use IPC::System::Simple qw< run capture EXIT_ANY $EXITVAL >;
 
+
+my @AUTOQUOTE =
+(
+	sub {	ref shift eq 'Regexp'						},
+	sub {	blessed $_[0] and $_[0]->can('basename')	},
+);
+
+sub _should_quote ()
+{
+	my $arg = $_;
+	local $_;
+	return 1 if any { $_->($arg) } @AUTOQUOTE;
+	return 0;
+}
 
 sub _process_bash_arg ()
 {
 	# incoming arg is in $_
 	my $arg = $_;				# make a copy
 	croak("Use of uninitialized argument to bash") unless defined $arg;
-	if (ref $arg eq 'Regexp' or blessed $arg and $arg->can('basename'))
+	if (_should_quote)
 	{
 		$arg = "$arg";			# stringify
 		$arg =~ s/'/'\\''/g;	# handle internal single quotes
