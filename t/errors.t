@@ -1,5 +1,4 @@
 use Test::Most 		0.25;
-use Test::Command	0.08;
 
 use PerlX::bash;
 
@@ -9,6 +8,7 @@ use Cwd 'abs_path';
 use File::Basename;
 use lib File::Spec->catdir(dirname(abs_path($0)), 'lib');
 use SkipUnlessBash;
+use TestUtilFuncs qw< perl_error_is >;
 
 
 my $uninit_msg = q|Use of uninitialized argument to bash|;
@@ -25,36 +25,6 @@ perl_error_is( "bash with first arg undefined doesn't throw bogus warning", $uni
     use PerlX::bash;
     bash undef;
 END
-
-
-
-# These are stolen shamelessly from my personal test suite for "myperl" (Test::myperl).
-# original lives at: https://github.com/barefootcoder/common/blob/master/perl/myperl/t/Test/myperl.pm
-
-sub _perl_command
-{
-	my $cmd = shift;
-	return [ $^X, '-e', $cmd, '--', @_ ];
-}
-
-sub perl_error_is
-{
-	my ($tname, $expected, $cmd, @extra) = @_;
-
-	if ( ref $expected eq 'Regexp' )
-	{
-		stderr_like(_perl_command($cmd, @extra), $expected, $tname);
-	}
-	elsif ( $expected =~ /\n\Z/ )
-	{
-		stderr_is_eq(_perl_command($cmd, @extra), $expected, $tname);
-	}
-	else
-	{
-		my $regex = qr/^\Q$expected\E( at \S+ line \d+\.)?\n/;
-		stderr_like(_perl_command($cmd, @extra), $regex, $tname);
-	}
-}
 
 
 done_testing;
