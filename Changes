@@ -2,6 +2,9 @@ Revision history for perlx-bash
 
 {{$NEXT}}
 
+    [New Features]
+    * Can now "pipe" `bash` output through a Perl sub.
+
     [Bug Fixes]
     * Combining capture and `-e` now works as expected.
 

@@ -57,7 +57,7 @@ sub bash (@)
 		my $arg = shift;
 		if (ref $arg)
 		{
-			die("bash: multiple capture specifications") if $capture;
+			croak("bash: multiple capture specifications") if $capture;
 			$capture = $$arg;
 		}
 		elsif ($arg eq '-e')
@@ -70,6 +70,10 @@ sub bash (@)
 		}
 	}
 	croak("Not enough arguments for bash") unless @_;
+
+	my $filter;
+	$filter = pop if ref $_[-1] eq 'CODE';
+	croak("bash: multiple output redirects") if $capture and $filter;
 
 	my @cmd = 'bash';
 	push @cmd, @opts;
@@ -101,6 +105,35 @@ sub bash (@)
 		else
 		{
 			die("bash: unrecognized capture specification [$capture]");
+		}
+	}
+	elsif ($filter)
+	{
+		$cmd[-1] =~ s/\s*(?<!\|)\|(&)?\s*$// or croak("bash: cannot filter without redirect");
+		$cmd[-1] .= ' 2>&1' if $1;
+
+		# This is pretty much straight out of `man perlipc`.
+		local *CHILD;
+		my $pid = open(CHILD, "-|");
+		defined($pid) or die("bash: can't fork [$!]");
+
+		if ($pid)				# parent
+		{
+			local $_;
+			while (<CHILD>)
+			{
+				$filter->($_);
+			}
+			unless (close(CHILD))
+			{
+				# You know how IPC::System::Simple says that `_process_child_error` is not intended
+				# to be called directly?  Yeah, well, the alternatives are worse ...
+				IPC::System::Simple::_process_child_error($?, 'bash', $exit_codes);
+			}
+		}
+		else					# child
+		{
+			exec(@cmd) or die("bash: can't exec program [$!]");
 		}
 	}
 	else
