@@ -2,6 +2,9 @@ Revision history for perlx-bash
 
 {{$NEXT}}
 
+    [Distro Fixes]
+    * Fix CPAN Testers failure for older versions of List::Util.
+
 0.03_02   2019-03-12 15:27:24-07:00 America/Los_Angeles (TRIAL RELEASE)
 
     [New Features]

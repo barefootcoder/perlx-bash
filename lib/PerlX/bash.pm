@@ -13,7 +13,7 @@ our %EXPORT_TAGS = ( all => \@EXPORT_OK );
 
 use Carp;
 use Contextual::Return;
-use List::Util qw< any >;
+use List::Util 1.33 qw< any >;
 use Scalar::Util qw< blessed >;
 use IPC::System::Simple qw< run capture EXIT_ANY $EXITVAL >;
 
