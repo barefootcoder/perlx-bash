@@ -2,6 +2,10 @@ Revision history for perlx-bash
 
 {{$NEXT}}
 
+    [Distro Fixes]
+    * Make `-x` testing work when Lmod is present.
+      github #3 (thx Slaven Rezić (SREZIC))
+
 0.04      2020-01-09 19:08:54-08:00 America/Los_Angeles
 
     [New Features]
