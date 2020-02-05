@@ -6,6 +6,10 @@ Revision history for perlx-bash
     * `head` and `tail` no longer go out-of-bounds of their input lists.
     * `bash \string =>` now autochomps, as expected.
 
+    [Doc Fixes]
+    * Added POD for all functions.
+      (thx Pod::Coverage tests)
+
 0.04_01   2020-01-18 03:17:10-08:00 America/Los_Angeles (TRIAL RELEASE)
 
     [Distro Fixes]
