@@ -6,6 +6,9 @@ Revision history for perlx-bash
     * `head` and `tail` no longer go out-of-bounds of their input lists.
     * `bash \string =>` now autochomps, as expected.
 
+    [New Features]
+    * `bash -c` now works like the POD says it did all along.
+
     [Doc Fixes]
     * Added POD for all functions.
       (thx Pod::Coverage tests)

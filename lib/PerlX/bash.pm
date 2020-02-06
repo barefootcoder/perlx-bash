@@ -62,6 +62,7 @@ sub bash (@)
 	my (@opts, $capture);
 	my $exit_codes = [0..125];
 
+	my $dash_c_cmd;
 	while ( $_[0] and ($_[0] =~ /^-/ or ref $_[0]) )
 	{
 		my $arg = shift;
@@ -69,6 +70,11 @@ sub bash (@)
 		{
 			croak("bash: multiple capture specifications") if $capture;
 			$capture = $$arg;
+		}
+		elsif ($arg eq '-c')
+		{
+			$dash_c_cmd = shift;
+			croak("Missing argument for bash -c") unless length($dash_c_cmd);
 		}
 		elsif ($arg eq '-e')
 		{
@@ -79,7 +85,14 @@ sub bash (@)
 			push @opts, $arg;
 		}
 	}
-	croak("Not enough arguments for bash") unless @_;
+	if (defined $dash_c_cmd)
+	{
+		croak("Too many arguments for bash -c") if @_;
+	}
+	else
+	{
+		croak("Not enough arguments for bash") unless @_;
+	}
 
 	my $filter;
 	$filter = pop if ref $_[-1] eq 'CODE';
@@ -89,7 +102,7 @@ sub bash (@)
 	push @cmd, @opts;
 	push @cmd, '-c';
 
-	my $bash_cmd = join(' ', map { _process_bash_arg } @_);
+	my $bash_cmd = $dash_c_cmd ? $dash_c_cmd : join(' ', map { _process_bash_arg } @_);
 	push @cmd, $bash_cmd;
 
 	if ($capture)
@@ -489,6 +502,10 @@ handled by PerlX::bash directly.
 
 Just as with system B<bash>, the C<-c> switch means that the entire command will be sent as one big
 string.  This completely disables all argument quoting (see L</Arguments>).
+
+When using C<-c>, it must be immediately followed by exactly one argument, which is neither C<undef>
+nor the empty string (but C<"0"> is okay, although not particularly useful).  Otherwise it's a fatal
+error.
 
 =head3 -e
 
