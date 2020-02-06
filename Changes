@@ -8,6 +8,8 @@ Revision history for perlx-bash
 
     [New Features]
     * `bash -c` now works like the POD says it did all along.
+    * Likewise, autoquoting now works like the POD says it did all along.
+    * Also, `shq` now exists and is exported.
 
     [Doc Fixes]
     * Added POD for all functions.

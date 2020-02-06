@@ -12,7 +12,7 @@ use SkipUnlessBash;
 use TestUtilFuncs qw< bash_debug_is >;
 
 
-bash_debug_is { bash -x => "$^X -e 'exit 0'" } "+ $^X -e 'exit 0'\n", 'basic bash -x works';
+bash_debug_is { bash -x => $^X, -e => 'exit 0' } "+ $^X -e 'exit 0'\n", 'basic bash -x works';
 
 
 done_testing;

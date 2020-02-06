@@ -5,7 +5,7 @@ use warnings;
 
 use Exporter 'import';
 our @EXPORT = ('bash');
-our @EXPORT_OK = (@EXPORT, qw< pwd head tail >);
+our @EXPORT_OK = (@EXPORT, qw< shq pwd head tail >);
 our %EXPORT_TAGS = ( all => \@EXPORT_OK );
 
 # VERSION
@@ -16,6 +16,9 @@ use Contextual::Return;
 use List::Util 1.33 qw< min max any >;
 use Scalar::Util qw< blessed >;
 use IPC::System::Simple qw< run capture EXIT_ANY $EXITVAL >;
+
+my $BASH_SPECIAL_CHARS = qr/[ \$'"\\#\[\]!<>|;{}()~]/;
+my $BASH_REDIRECTION   = qr/^\d[<>].+/;
 
 
 =head1 FUNCTIONS
@@ -33,6 +36,9 @@ sub _should_quote ()
 	my $arg = $_;
 	local $_;
 	return 1 if any { $_->($arg) } @AUTOQUOTE;
+	return 0 if $arg =~ /^$BASH_SPECIAL_CHARS/;
+	return 0 if $arg =~ $BASH_REDIRECTION;
+	return 1 if $arg =~ $BASH_SPECIAL_CHARS;
 	return 0;
 }
 
@@ -41,12 +47,7 @@ sub _process_bash_arg ()
 	# incoming arg is in $_
 	my $arg = $_;				# make a copy
 	croak("Use of uninitialized argument to bash") unless defined $arg;
-	if (_should_quote)
-	{
-		$arg = "$arg";			# stringify
-		$arg =~ s/'/'\\''/g;	# handle internal single quotes
-		$arg = "'$arg'";		# quote with single quotes
-	}
+	$arg = shq($arg) if _should_quote;
 	return $arg;
 }
 
@@ -92,6 +93,7 @@ sub bash (@)
 	else
 	{
 		croak("Not enough arguments for bash") unless @_;
+		$dash_c_cmd = shift if @_ == 1 and $_[0] and $_[0] =~ /\s/;
 	}
 
 	my $filter;
@@ -168,6 +170,43 @@ sub bash (@)
 			SCALAR	{	$EXITVAL		}
 		;
 	}
+}
+
+=head2 shq
+
+Manually quote something for use as a command-line argument to C<bash>.  The following steps are
+performed:
+
+=over
+
+=item *
+
+The argument is stringified, in case it is an object.
+
+=item *
+
+Any single quotes in the string are globally replaced with C<'\''>.
+
+=item *
+
+The entire string is then enclosed in single quotes.
+
+=back
+
+This should get the string to I<bash> as you intended it; however, beware of arguments which are
+consequently passed on to another shell (e.g. when your C<bash> command is C<ssh>).  In those cases,
+extra quoting may be required, and you must provide that before calling C<shq>.
+
+Exported only on request.
+
+=cut
+
+sub shq
+{
+	local $_ = shift;
+	#$_ = "$_";					# stringify
+	s/'/'\\''/g;				# handle internal single quotes
+	"'$_'";						# quote with single quotes
 }
 
 
@@ -409,7 +448,51 @@ L</"Special Characters">) is never quoted.
 =item *
 
 Some things are I<sometimes> quoted.  Any argument that I<contains> a special character (see
-L</"Special Characters">) is quoted.
+L</"Special Characters">) is quoted, unless one of the following things is true:
+
+=over
+
+=item *
+
+It is the only argument left after processing capture modes and filters, B<and> it has whitespace in
+it.  In other words, this:
+
+    bash "echo foo; echo bar";
+
+is the same as this:
+
+    bash -c => "echo foo; echo bar";
+
+On the grounds that that's most likely what you meant.  (You weren't really trying to generate a
+C<echo foo; echo bar: command not found> error, were you?)  Basically, if it looks like it would
+make a lovely command line as is, we don't mess with it.
+
+=item *
+
+It looks like a redirection.  While the majority of redirections I<do> begin with a special char,
+sometimes they start with a number; all the following strings would qualify as "looking like a
+redirection," despite not beginning with a special char:
+
+=over
+
+=item *
+
+C<< 2>something >> (standard redirection with fileno)
+
+=item *
+
+C<< 2>&1 >> (redirection from fileno to fileno)
+
+=item *
+
+C<< 4<<<$SOMEVAR >> (here string)
+
+=back
+
+Note that some redirection syntax may be bash-version-specific, but the decision on whether to quote
+or not does I<not> take the C<bash> version into account.
+
+=back
 
 =item *
 
@@ -480,14 +563,18 @@ If an argument is quoted, it is run through L</shq>, which means it is surrounde
 quotes, and any internal single quotes are appropriately escaped.  This is similar to how `bash -x`
 does it when it prints command lines.
 
-If an argument is not quoted but you wish it were, you can simply call C<shq> yourself (feature not
-yet implemented):
+If an argument is not quoted but you wish it were, you can simply call C<shq> yourself (but remember
+it is not exported by default):
 
+    use PerlX::bash qw< bash shq >;
     bash echo => shq(">bar");   # to print ">bar"
 
 If an argument I<is> quoted but you wish it weren't, you need to fall back to passing the entire
-command as one big string.  For this, use the C<-c> switch:
+command as one big string.  (The C<-c> switch is not required, but it may be clearer.)
 
+    # this echoes one line, not two:
+    bash echo => "foo;echo bar";
+    # this gives you two:
     bash -c => "echo foo;echo bar";
     # or just, you know, make the semi-colon a separate arg:
     bash echo => "foo", ';', echo => "bar";
