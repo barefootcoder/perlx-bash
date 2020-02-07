@@ -12,8 +12,8 @@ use SkipUnlessBash;
 
 # Don't want to count on having anything in particular installed, so we'll make our own faux class
 # that can stringify.
-package Foo
 {
+	package Foo;
 	use overload '""' => sub { "Foo" };
 	sub new { bless {}, __PACKAGE__ }
 };
