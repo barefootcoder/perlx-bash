@@ -299,12 +299,12 @@ sub tail
 
 =head1 STATUS
 
-This module is still an experiment, but I am currently using it daily for small tasks.  The basic
-functionality is very useful; however, I still cannot yet promise I won't make sweeping changes to
-the interface.  I still welcome suggestions and contributions, and continue to recommend that you do
-I<not>  rely on this in production code (yet).
-
-Documentation is much improved, but still not complete.
+This module is no longer experimental, and is currently being used for production tasks.  There will
+be no further sweeping changes to the interface, but some tweaking may be necessary as it sees more
+and more use.  Documentation should be complete at this point; anything missing should be considered
+a bug and reported.  I continue to welcome suggestions and contributions, and now recommend that you
+use this for any purpose you like, but perhaps just keep a close eye on it as it continues to
+mature.
 
 
 =head1 DESCRIPTION

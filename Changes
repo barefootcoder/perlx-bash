@@ -16,6 +16,7 @@ Revision history for perlx-bash
     * Added POD for all functions.
       (thx Pod::Coverage tests)
     * Added POD for filter modes.
+    * Update: no longer considered experimental!
 
 0.04_01   2020-01-18 03:17:10-08:00 America/Los_Angeles (TRIAL RELEASE)
 
