@@ -13,7 +13,7 @@ our %EXPORT_TAGS = ( all => \@EXPORT_OK );
 
 use Carp;
 use Contextual::Return;
-use List::Util 1.33 qw< any >;
+use List::Util 1.33 qw< min max any >;
 use Scalar::Util qw< blessed >;
 use IPC::System::Simple qw< run capture EXIT_ANY $EXITVAL >;
 
@@ -154,8 +154,7 @@ use Cwd ();
 sub head
 {
 	my $num = shift;
-	$num = @_ + $num if $num < 0;
-#warn("# num is $num");
+	$num = $num < 0 ? @_ + $num : min($num, scalar @_);
 	@_[0..$num-1];
 }
 
@@ -163,8 +162,7 @@ sub tail
 {
 	my $num = shift;
 	return () unless $num;
-	$num = $num < 0 ? @_ + $num : $num - 1 ;
-#warn("# num is $num");
+	$num = $num < 0 ? max(@_ + $num, 0) : $num - 1 ;
 	@_[$num..$#_];
 }
 
