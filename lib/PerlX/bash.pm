@@ -90,6 +90,7 @@ sub bash (@)
 		my $output = capture $exit_codes, qw< bash -c >, $bash_cmd;
 		if ($capture eq 'string')
 		{
+			chomp $output;
 			return $output;
 		}
 		elsif ($capture eq 'lines')

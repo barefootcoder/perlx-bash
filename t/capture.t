@@ -14,7 +14,7 @@ my $proglet = 'print "A 1\nB  2\n\nC 3\n"';
 
 # capture as string
 my $str = bash \string => "$^X -e '$proglet'";
-is $str, "A 1\nB  2\n\nC 3\n", "bash \\string captures to scalar";
+is $str, "A 1\nB  2\n\nC 3", "bash \\string captures to scalar";
 
 # capture as lines
 my @lines = bash \lines => "$^X -e '$proglet'";
