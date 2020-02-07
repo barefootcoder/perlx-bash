@@ -58,6 +58,10 @@ is bash(\string => '[[ -z "" ]]', '&&', echo => 'foo'), "foo", "syntax is not au
 # Oblig SO ref for how to test version: https://askubuntu.com/questions/916976
 my $major_version = bash \string => echo => '${BASH_VERSINFO[0]}';
 my $minor_version = bash \string => echo => '${BASH_VERSINFO[1]}';
+diag '';											# printing out the bash version info we collected
+diag '#' x 20;										# this will help nail down CPAN Testers failures
+diag "BASH VERSION: $major_version.$minor_version";
+diag '#' x 20;
 sub _is_bash_ge
 {
 	my ($major, $minor) = split(/\./, shift);
