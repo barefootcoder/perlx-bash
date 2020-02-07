@@ -5,6 +5,7 @@ Revision history for perlx-bash
     [Bug Fixes]
     * `head` and `tail` no longer go out-of-bounds of their input lists.
     * `bash \string =>` now autochomps, as expected.
+    * Lines sent to filter mode subs are now pre-chomped, as expected.
 
     [New Features]
     * `bash -c` now works like the POD says it did all along.
@@ -14,6 +15,7 @@ Revision history for perlx-bash
     [Doc Fixes]
     * Added POD for all functions.
       (thx Pod::Coverage tests)
+    * Added POD for filter modes.
 
 0.04_01   2020-01-18 03:17:10-08:00 America/Los_Angeles (TRIAL RELEASE)
 

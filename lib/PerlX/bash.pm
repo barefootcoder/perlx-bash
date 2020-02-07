@@ -148,6 +148,7 @@ sub bash (@)
 			local $_;
 			while (<CHILD>)
 			{
+				chomp;
 				$filter->($_);
 			}
 			unless (close(CHILD))
@@ -421,7 +422,48 @@ context; in scalar context, they just return the first element of the list.
 
 =head3 Filter Modes
 
-Not yet documented.
+If you write some code that looks like this:
+
+    # print paragraph "1:" through paragraph "10:"
+    say foreach grep { (/^(\d+):/ && $1 < 10)../^$/ } bash \lines => 'my-script';
+
+then it's going to do what you think: all the lines of output are filtered through your C<grep> and
+you get just the lines you wanted.  However, if C<my-script> takes a long time to produce its
+output, this solution may not make you happy, because you get nothing at all until C<my-script> has
+completely finished running.  It would be nicer if you could get the output as it was produced,
+right?
+
+Try this instead:
+
+    # print paragraph "1:" through paragraph "10:"
+    bash \lines => 'my-script |' => sub { say if (/^(\d+):/ && $1 < 10)../^$/ };
+
+You'll be much happier.
+
+Technical details:
+
+=over
+
+=item *
+
+There are two filter modes: C<|> and C<|&>.  The former runs each line of C<STDOUT> through your
+filter function.  The latter runs both C<STDOUT> and C<STDERR> through it.
+
+=item *
+
+In order to use a filter mode, your final argument must be a coderef, and your penultimate argument
+must either consist of, or end with, one of the two modes.
+
+=item *
+
+From the perspective of your filter sub, the incoming line is both C<$_> and C<$_[0]>; use whichever
+you prefer.
+
+=item *
+
+Just as with C<\lines>, each line is pre-chomped for you.
+
+=back
 
 
 =head2 Arguments

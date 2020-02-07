@@ -15,12 +15,12 @@ my $gather;
 # filter STDOUT
 $gather = [];
 bash $^X, -le => 'print foreach 1..10', '|' => sub { push @$gather, $_ if $_ % 2 == 0 };
-eq_or_diff $gather, [map { "$_\n" } 2,4,6,8,10], "can filter to Perl sub";
+eq_or_diff $gather, [2,4,6,8,10], "can filter to Perl sub";
 
 # filter STDERR too
 $gather = [];
 bash $^X, -le => 'print STDERR foreach 1..10', '|&' => sub { push @$gather, $_ if $_ % 2 == 0 };
-eq_or_diff $gather, [map { "$_\n" } 2,4,6,8,10], "can filter STDERR to Perl sub";
+eq_or_diff $gather, [2,4,6,8,10], "can filter STDERR to Perl sub";
 
 # ensure we're still checking exit codes
 $gather = [];
