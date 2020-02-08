@@ -4,6 +4,7 @@ Revision history for perlx-bash
 
     [Distro Fixes]
     * Fix CPAN Testers failure (in unit tests) for older versions of Perl.
+    * Maybe-fix CPAN Testers failure for testing `{varname[n]}>` syntax.
     * Add diagnostic info for what version of bash we're dealing with.
       (based on Andreas Koenig (ANDK)'s suggestion for Date::Easy)
 
