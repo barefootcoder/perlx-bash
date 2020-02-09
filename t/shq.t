@@ -95,8 +95,7 @@ subtest 'allocate and assign to arrayvar' => sub
 {
 	my $min_version = "4.3";
 	plan skip_all => "requires bash >= $min_version" unless _is_bash_ge($min_version);
-	# not sure the `declare` is ever necessary, but it can't hurt, and it might help
-	is bash(\string => declare => -a => 'foo', ';', echo => 'foo', '{foo[1]}>>'.File::Spec->devnull), "foo",
+	is bash(\string => echo => 'foo', '{foo[1]}>>'.File::Spec->devnull), "foo",
 			"indexed varname redirection is not autoquoted";
 };
 
