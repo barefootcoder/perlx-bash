@@ -65,7 +65,7 @@ diag '#' x 20;
 sub _is_bash_ge
 {
 	my ($major, $minor) = split(/\./, shift);
-	return $major > $major_version || $major == $major_version && $minor >= $minor_version;
+	return $major_version > $major || $major_version == $major && $minor_version  >= $minor;
 }
 is bash(\string => echo => 'foo', '4<'.File::Spec->devnull),  "foo", "fileno redirection is not autoquoted: <";
 is bash(\string => echo => 'foo', '4>'.File::Spec->devnull),  "foo", "fileno redirection is not autoquoted: >";
