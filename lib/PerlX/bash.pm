@@ -17,7 +17,8 @@ use List::Util 1.33 qw< min max any >;
 use Scalar::Util qw< blessed >;
 use IPC::System::Simple qw< run capture EXIT_ANY $EXITVAL >;
 
-my $BASH_SPECIAL_CHARS = qr/[ \$'"\\#\[\]!<>|;{}()~]/;
+# see e.g. https://mywiki.wooledge.org/BashGuide/SpecialCharacters
+my $BASH_SPECIAL_CHARS = qr/[\s\$'"\\#\[\]!<>|;{}()~&]/;
 my $BASH_REDIRECTION   = qr/^\d[<>].+/;
 
 
@@ -594,10 +595,11 @@ For purposes of determining whether to quote arguments, the most important chara
 a string contains any I<special characters>.  Here's the character class of all characters
 considered "special" by bash:
 
-    [ \$'"\\#\[\]!<>|;{}()~]
+    [\s\$'"\\#\[\]!<>|;{}()~&]
 
 Note that space is a special character, as are both types of quotes and all four types of brackets,
-and backslash.
+and backslash.  Note that the list does B<not> include C<=> or the glob characters (C<*> and C<?>),
+because you probably don't want those quoted under most circumstances.
 
 =head3 Quoting Details
 

@@ -2,6 +2,9 @@ Revision history for perlx-bash
 
 {{$NEXT}}
 
+    [Bug Fixes]
+    * `&` now properly considered to be a special character.
+
     [Distro Fixes]
     * Checking of minimum bash version was backwards.
 
