@@ -64,6 +64,9 @@ sub bash (@)
 	my (@opts, $capture);
 	my $exit_codes = [0..125];
 
+	my $filter;
+	$filter = pop if ref $_[-1] eq 'CODE';
+
 	my $dash_c_cmd;
 	while ( $_[0] and ($_[0] =~ /^-/ or ref $_[0]) )
 	{
@@ -97,8 +100,6 @@ sub bash (@)
 		$dash_c_cmd = shift if @_ == 1 and $_[0] and $_[0] =~ /\s/;
 	}
 
-	my $filter;
-	$filter = pop if ref $_[-1] eq 'CODE';
 	croak("bash: multiple output redirects") if $capture and $filter;
 
 	my @cmd = 'bash';

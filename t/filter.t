@@ -27,6 +27,9 @@ $gather = [];
 throws_ok { bash -e => $^X, -le => 'print foreach 1..10; exit 1', '|' => sub { push @$gather, $_ if $_ % 2 == 0 } }
 		qr/unexpectedly returned exit value /, 'bash -e still works with filters';
 
+# ensure filtering doesn't bork autoquoting
+lives_ok { bash "echo foo |" => sub {} } "filter doesn't interfere with autoquoting rules";
+
 
 # not allowed to use capture with filter
 throws_ok { bash \string => echo => 'foo', '|' => sub {} }

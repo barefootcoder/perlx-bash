@@ -2,6 +2,9 @@ Revision history for perlx-bash
 
 {{$NEXT}}
 
+    [Bug Fixes]
+    * Filtering no longer interferes with autoquoting.
+
 0.05      2020-02-09 00:45:03-08:00 America/Los_Angeles
 
     [New Features]
